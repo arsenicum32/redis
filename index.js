@@ -12,19 +12,30 @@ client.on("error", error => {
 })
 
 app.get('/:k', ({ params }, res) => {
-  client.get(params.k , (err, done ) => {
+  client.get( params.k , (err, done ) => {
     if ( err )
       return res.json({ value: null})
-    res.json({ value: done})
+
+    try {
+      res.json({ value: JSON.parse( done ) })
+    } catch (e) {
+      res.json({ value: null })
+    }
   })
 })
 
 app.post('/:k', ({ params, body }, res) => {
-  client.set( params.k, body.value , (err, done ) => {
-    if ( err )
-      return res.json({ result: null })
-    res.json({ result: done })
-  })
+  try {
+    const value = JSON.stringify( body.value )
+    client.set( params.k, value , (err, done ) => {
+      if ( err )
+        return res.json({ result: null })
+      res.json({ result: done })
+    })
+
+  } catch (e) {
+    res.json({ result: null })
+  }
 })
 
 
