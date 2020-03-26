@@ -39,6 +39,21 @@ app.post('/:k', ({ params, body }, res) => {
 })
 
 
+app.get('/mails', ({params,body}) => {
+  try {
+    const value = JSON.stringify( body.value )
+    client.keys( '*' , (err, done ) => {
+      if ( err )
+        return res.json({ result: null })
+      res.json({ result: done })
+    })
+
+  } catch (e) {
+    res.json({ result: null })
+  }
+})
+
+
 app.all('*', (req,res) => {
   res.json(
     {
